@@ -7,7 +7,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Resolve full path with proper casing and no short names
-$output = [IO.Path]::GetFullPath((Join-Path $OriginalTemp "cf2.exe"))
+$output = [IO.Path]::GetFullPath((Join-Path $OriginalTemp "cf3.exe"))
 
 try {
     # Force create directory structure
